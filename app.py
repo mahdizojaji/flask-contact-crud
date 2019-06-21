@@ -37,5 +37,12 @@ def read(_id):
             raise InvalidUsage('User Not Found', status_code=404)
 
 
+@app.errorhandler(InvalidUsage)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
+
 if __name__ == '__main__':
     app.run(host=HOST, port=PORT, debug=DEBUG)
