@@ -56,6 +56,16 @@ def update(_id):
         raise InvalidUsage('User Not Found', status_code=404)
 
 
+@app.route('/contact/<int:_id>', methods=['DELETE'])
+def delete(_id):
+    try:
+        contact = Contact.select().where(Contact._id == _id).get()
+        contact.delete_instance()
+        return jsonify({'_id': contact._id, 'status': 'deleted'})
+    except Exception:
+        raise InvalidUsage('User Not Found', status_code=404)
+
+
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
