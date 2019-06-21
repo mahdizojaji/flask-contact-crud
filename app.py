@@ -19,5 +19,23 @@ def create():
         raise InvalidUsage('Invalid arguments', status_code=400)
 
 
+@app.route('/contact/', defaults={'_id': None}, methods=['GET'])
+@app.route('/contact/<int:_id>', methods=['GET'])
+def read(_id):
+    if _id is None:
+        result = [{'_id': contact._id, 'name': contact.name, 'phone': contact.phone} for contact in Contact.select()]
+
+        return jsonify(result) if result else 'No Contact Found'
+    else:
+        result = [
+            {'_id': contact._id, 'name': contact.name, 'phone': contact.phone}
+            for contact in Contact.select().where(Contact._id == _id)
+        ]
+        if result:
+            return jsonify(result[-1])
+        else:
+            raise InvalidUsage('User Not Found', status_code=404)
+
+
 if __name__ == '__main__':
     app.run(host=HOST, port=PORT, debug=DEBUG)
