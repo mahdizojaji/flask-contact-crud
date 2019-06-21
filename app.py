@@ -24,16 +24,13 @@ def create():
 def read(_id):
     if _id is None:
         result = [{'_id': contact._id, 'name': contact.name, 'phone': contact.phone} for contact in Contact.select()]
-
         return jsonify(result) if result else 'No Contact Found'
     else:
-        result = [
-            {'_id': contact._id, 'name': contact.name, 'phone': contact.phone}
-            for contact in Contact.select().where(Contact._id == _id)
-        ]
-        if result:
-            return jsonify(result[-1])
-        else:
+        try:
+            contact = Contact.select().where(Contact._id == _id).get()
+            return jsonify({'_id': contact._id, 'name': contact.name, 'phone': contact.phone})
+        except Exception as error:
+            print(error)
             raise InvalidUsage('User Not Found', status_code=404)
 
 
