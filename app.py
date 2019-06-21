@@ -9,7 +9,6 @@ app = Flask(__name__)
 @app.route('/contact', methods=['POST'])
 def create():
     try:
-        print(dict(request.form))
         name = request.form['name']
         phone = request.form['phone']
         Contact.create(name=name, phone=phone).save()
@@ -29,8 +28,7 @@ def read(_id):
         try:
             contact = Contact.select().where(Contact._id == _id).get()
             return jsonify({'_id': contact._id, 'name': contact.name, 'phone': contact.phone})
-        except Exception as error:
-            print(error)
+        except Exception:
             raise InvalidUsage('User Not Found', status_code=404)
 
 
@@ -61,6 +59,12 @@ def delete(_id):
         return jsonify({'_id': contact._id, 'status': 'deleted'})
     except Exception:
         raise InvalidUsage('User Not Found', status_code=404)
+
+
+@app.route('/contact', methods=['OPTIONS'])
+def options():
+    result = {'Allow': 'HEAD, GET, PUT, DELETE, OPTIONS'}
+    return jsonify(result)
 
 
 @app.errorhandler(InvalidUsage)
