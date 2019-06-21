@@ -37,6 +37,25 @@ def read(_id):
             raise InvalidUsage('User Not Found', status_code=404)
 
 
+@app.route('/contact/<int:_id>', methods=['PUT'])
+def update(_id):
+    try:
+        data = dict(request.form)
+        name = data.get('name')
+        phone = data.get('phone')
+        assert name or phone
+    except Exception:
+        raise InvalidUsage('Invalid arguments', status_code=400)
+    try:
+        contact = Contact.select().where(Contact._id == _id).get()
+        contact.name = name or contact.name
+        contact.phone = phone or contact.phone
+        contact.save()
+        return jsonify({'_id': contact._id, 'name': contact.name, 'phone': contact.phone})
+    except Exception:
+        raise InvalidUsage('User Not Found', status_code=404)
+
+
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
