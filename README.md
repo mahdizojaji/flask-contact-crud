@@ -8,5 +8,5 @@ simple flask crud to manage contacts
 1. Install requirements using `pip install -r requirements.txt`.
 1. Initialize the database using `python migrate.py generate-db`.
 
-### 3. Usage
+### Usage
 - Run the `app.py` file like: `python app.py`
